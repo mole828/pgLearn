@@ -1,0 +1,11 @@
+version: '3' 
+services:
+  pg:
+    image: bitnami/postgresql:16.3.0-debian-12-r14
+    container_name: pg
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRESQL_USERNAME=app
+      - POSTGRESQL_PASSWORD=app
+      - POSTGRESQL_DATABASE=app
