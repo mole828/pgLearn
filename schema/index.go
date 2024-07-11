@@ -6,7 +6,7 @@ type Book struct {
 	//lint:ignore U1000 tableName
 	tableName interface{} `pg:"book"`
 	Id        int         `pg:"id,pk"`
-	Name      string      `pk:"name"`
+	Name      string      `pg:"name"`
 }
 
 type OrderItem struct {
@@ -22,7 +22,15 @@ type Order struct {
 	//lint:ignore U1000 tableName
 	tableName interface{} `pg:"order"`
 	Id        int         `pg:"id,pk"`
-	Items     []OrderItem `pg:"rel:has-many"`
+	// Items     []OrderItem `pg:"rel:has-many"`
+}
+
+type OrderWithItem struct {
+	//lint:ignore U1000 tableName
+	// 组合不能访问私有变量，需要重新定义表名
+	tableName interface{} `pg:"order"`
+	Order
+	Items []OrderItem `pg:"rel:has-many"`
 }
 
 func init() {

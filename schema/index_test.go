@@ -75,11 +75,6 @@ func TestSelectBook(t *testing.T) {
 func TestInsertOrder(t *testing.T) {
 	var order = &schema.Order{
 		Id: 1,
-		Items: []schema.OrderItem{
-			{OrderId: 1, BookId: 1, Quantity: 10},
-			{OrderId: 1, BookId: 2, Quantity: 5},
-			{OrderId: 1, BookId: 3, Quantity: 7},
-		},
 	}
 	db.RunInTransaction(context.Background(), func(tx *pg.Tx) error {
 		var inserted, err = tx.Model(order).Where("id=?", order.Id).SelectOrInsert()
@@ -112,7 +107,9 @@ func TestInsertOrderItem(t *testing.T) {
 
 func TestSelectOrder(t *testing.T) {
 	db.RunInTransaction(context.Background(), func(tx *pg.Tx) error {
-		var order = &schema.Order{}
+		var order = &schema.OrderWithItem{
+			Order: schema.Order{},
+		}
 		if err := tx.Model(order).
 			Where("id=?", 1).
 			// Relation "Items"，好像是根据反射选取的
@@ -127,7 +124,10 @@ func TestSelectOrder(t *testing.T) {
 			t.Error(err)
 			return err
 		}
-		t.Log(order)
+		t.Logf("%+v", order)
+		if order.Id != 1 {
+			t.Error(order)
+		}
 		return nil
 	})
 }
